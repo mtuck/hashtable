@@ -3,7 +3,7 @@
 using namespace std;
 
 int main(){
-	HashTable<int> l;
+	HashTable<int> (11);
 
 
   return 0;

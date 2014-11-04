@@ -13,7 +13,7 @@ template <class T>
 class HashTable{
 public:
 	HashTable();
-	HashTable(T size);
+	HashTable(int size);
 	HashTable(const HashTable<T>& n);
 	HashTable& operator =(const HashTable<T>& rhs);
 	bool insert(T data);
