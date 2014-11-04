@@ -1,6 +1,17 @@
+#ifndef HASHTABLE_H
+#define HASHTABLE_H
+
+
+#include <iostream>
+using namespace std;
+
+template <class T>
+class HashTable;
+
+
 template <class T>
 class HashTable{
-Public:
+public:
 	HashTable();
 	HashTable(T size);
 	HashTable(const HashTable<T>& n);
@@ -14,6 +25,9 @@ Public:
 	void clearTable();
 	void pirntTable(ostream& os) const;
 	~HashTable();
-Private:
-	T table[]; 
+private:
+	T * table;
 };
+
+#include "hashtable.cpp"
+#endif //HASHTABLE_H

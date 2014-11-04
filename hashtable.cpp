@@ -1,6 +1,8 @@
-Template class <T>
-HashTable::HashTable(){}
+#include "hashtable.h"
+
+template <class T>
+HashTable<T>::HashTable(){}
 
 
-Template class<T.
-HashTable::HashTable(T size){]
+template <class T>
+HashTable<T>::HashTable(T size){}
