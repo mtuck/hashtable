@@ -28,11 +28,28 @@ public:
 	bool isEmpty() const;
 	void clearTable();
 	void pirntTable(ostream& os) const;
+	void showFill();
 	~HashTable();
 private:
 	int * table;
 	int tableSize;
 };
+
+
+
+
+template <class T>
+void HashTable<T>::showFill(){
+	cout<<"\n\n";
+	for(int i = 0; i < tableSize; i++){
+		cout<<"|--------|\n";
+		if(table[i]== 0)
+			cout<<"|"<<i<<"\t |\n";
+		else
+			cout<<"|"<<i<<"\tx|\n";
+	}
+	cout<<"|--------|\n";
+}
 
 template <class T>
 HashTable<T>::HashTable(){}
@@ -45,16 +62,16 @@ HashTable<T>::HashTable(int size){
 	table = new int[size];
 	tableSize = size;
 	
-	for(int l = 0; l<= 1; l++)  //why will this not work wtf
+	for(int l = 0; l< size; l++)  //why will this not work wtf
 		table[l] = 0;
-		
-	
-		table[0] = 0;  //but this will
-		table[1] = 0;
-	
-		
+	table[2]=2;
+
 	cout<<"table created of size "<<size;
 }
+
+
+
+
 
 
 int findClosestPrime(int size){
