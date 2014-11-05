@@ -25,6 +25,8 @@ public:
 	int Insert(T key);
 	int makeKey(T key);
 	bool tableFull();
+	int NewSlot(T key, int& tries);
+	
 	
 	bool remove(T data);
 	bool search(T data) const;
@@ -46,15 +48,26 @@ private:
 template <class T>
 int HashTable<T>::Insert(T key){
 	int tries = 1;
-	int start = makeKey(key)%tableSize;
-	int slot = start;	                //makeKey is function that needs to be specialized
+              //makeKey is function that needs to be specialized
 	
 	if(tableFull()){
 		cout<<"table is full";
 		return 0;
 	}
 	
-	while(table[slot] != 0){
+	table[NewSlot(key, tries)] = key;
+	return tries;
+
+}
+
+template <class T>
+int  HashTable<T>::NewSlot(T key, int& tries){
+
+		int start = makeKey(key)%tableSize;
+		int slot = start;	  
+
+		
+		while(table[slot] != 0){
 		if(table[slot] == key){
 			cout<<"Duplicates are not allowed";
 			return 0;
@@ -69,9 +82,8 @@ int HashTable<T>::Insert(T key){
 		tries++;
 	}
 	
-	table[slot] = key;
-	return tries;
-
+	return slot;
+	
 }
 
 
