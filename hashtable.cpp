@@ -18,6 +18,15 @@ HashTable<T>::HashTable(int size){
 	size = findClosestPrime(size);
 	
 	table = new int[size];
+	tableSize = size;
+	/*
+	for(int i = 0; i<= 1; i++)  //why will this not work wtf
+		table[i] = 0;
+	*/
+		table[0] = 0;  //but this will
+		table[1] = 0;
+	
+		
 	cout<<"table created of size "<<size;
 }
 
@@ -28,7 +37,7 @@ int findClosestPrime(int size){
 		
 	int* arr = new int[NUMOFPRIMES];
 
-	int line;
+
 	
 	ifstream myfile;
 	myfile.open("first10000prime.txt");
@@ -49,13 +58,14 @@ int findClosestPrime(int size){
 		jold = j;
 		j =(begin + end)/2;
 	}
-	
-	return arr[j];
+	int temp = arr[j];
+	delete []arr;
+	return temp;
 
 }
 
 
 template <class T>
 HashTable<T>::~HashTable(){
-	delete table;
+	delete []table;
 }
