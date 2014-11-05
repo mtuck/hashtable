@@ -46,7 +46,8 @@ private:
 template <class T>
 int HashTable<T>::Insert(T key){
 	int tries = 1;
-	int slot = makeKey(key)%tableSize;	                //makeKey is function that needs to be specialized
+	int start = makeKey(key)%tableSize;
+	int slot = start;	                //makeKey is function that needs to be specialized
 	
 	if(tableFull()){
 		cout<<"table is full";
@@ -58,8 +59,12 @@ int HashTable<T>::Insert(T key){
 			cout<<"Duplicates are not allowed";
 			return 0;
 		}
-		else
-			slot += int(pow(2,tries))%tableSize;
+		else{
+			if(tries < (tableSize * 3))
+				slot = (start + int(pow(2,tries-1)))%2;
+			else
+				slot++;        //start linear probing for slot if it has been threw table more than 3 times
+		}
 		
 		tries++;
 	}
