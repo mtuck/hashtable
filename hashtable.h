@@ -26,7 +26,7 @@ public:
 	int makeKey(T key);
 	bool tableFull();
 	int NewSlot(T key, int& tries);
-	
+	int Remove(T key);
 	
 	bool remove(T data);
 	bool search(T data) const;
@@ -48,7 +48,7 @@ private:
 template <class T>
 int HashTable<T>::Insert(T key){
 	int tries = 1;
-              //makeKey is function that needs to be specialized
+              
 	
 	if(tableFull()){
 		cout<<"table is full";
@@ -60,10 +60,35 @@ int HashTable<T>::Insert(T key){
 
 }
 
+
+template <class T>
+int HashTable<T>::Remove(T key){
+		int intKey = makeKey(key);
+		int start =	 intKey%tableSize; //makeKey is function that needs to be specialized
+		int slot = start;
+		int tries = 1;
+		
+	
+		
+		while(table[slot] != key && table[slot] != 0){
+			if(tries > tableSize) return 0;
+			slot++;
+			tries++;
+		}
+		
+		if(table[slot] != key) return 0;
+		
+		table[slot] = 0;
+		return tries;
+			
+		
+			
+}
+
 template <class T>
 int  HashTable<T>::NewSlot(T key, int& tries){
-
-		int start = makeKey(key)%tableSize;
+		int intKey = makeKey(key);
+		int start =	 intKey%tableSize; //makeKey is function that needs to be specialized
 		int slot = start;	  
 
 		
@@ -72,13 +97,9 @@ int  HashTable<T>::NewSlot(T key, int& tries){
 			cout<<"Duplicates are not allowed";
 			return 0;
 		}
-		else{
-			if(tries < (tableSize * 3))
-				slot = (start + int(pow(2,tries-1)))%2;
-			else
-				slot++;        //start linear probing for slot if it has been threw table more than 3 times
-		}
-		
+	
+				
+		slot++;        //start linear probing for slot if it has been threw table more than 3 times
 		tries++;
 	}
 	

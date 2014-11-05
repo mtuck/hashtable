@@ -8,10 +8,12 @@ int main(){
 	l.Insert(2);
 	l.Insert(999);
 	l.Insert(1000);
-	l.Insert(2001);
+	cout<<endl<<l.Insert(2001)<<endl;
 	l.Insert(2005);
-	cout<<l.Insert(2009)<<endl;
+	cout<<endl<<l.Insert(2009)<<endl;
 	l.Insert(300010);
+	cout<<endl<<l.Remove(0)<<endl;
+	cout<<endl<<l.Remove(2001)<<endl;  //2001 takes 2 tries to add and 2 to remove
 	l.ShowFill();
 	l.ShowContents();
 
