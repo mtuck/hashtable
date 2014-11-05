@@ -16,17 +16,11 @@ public:
 	HashTable(int size);
 	HashTable(const HashTable<T>& n);
 	HashTable& operator =(const HashTable<T>& rhs);
-	bool insert(T data);
-	bool remove(T data);
-	bool search(T data) const;
-	T howMany() const;
-	bool isFull() const;
-	bool isEmpty() const;
-	void clearTable();
-	void pirntTable(ostream& os) const;
+    void showFill();
 	~HashTable();
 private:
 	T * table;
+    int tableSize;
 };
 
 #include "hashtable.cpp"

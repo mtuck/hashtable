@@ -3,8 +3,8 @@
 using namespace std;
 
 int main(){
-	HashTable<int> (11);
-
+	HashTable<int> l(4);
+    l.showFill();
 
   return 0;
 }

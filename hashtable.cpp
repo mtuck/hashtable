@@ -5,6 +5,7 @@ int findClosestPrime(int size);
 #include "hashtable.h"
 #include <iostream>
 #include<fstream>
+#include <new>
 
 using namespace std;
 
@@ -12,13 +13,29 @@ template <class T>
 HashTable<T>::HashTable(){}
 
 
+
+
+
 template <class T>
 HashTable<T>::HashTable(int size){
 	size = size * 2 + 1;  //will always be odd
 	size = findClosestPrime(size);
 	
-	table = new int[size];
+    table = new (nothrow) int[size];
+    tableSize = size;
 	cout<<"table created of size "<<size;
+}
+
+
+template <class T>
+void HashTable<T>::showFill(){
+    for(int i = 0; i < 5; i++){
+        cout<<"|---------------------|";
+        if(table[i] == 0)
+            cout<<"|"<<i<<"\t\t\t|";
+        else
+            cout<<"|"<<i<<"\tX\t|";
+    }
 }
 
 
@@ -28,7 +45,7 @@ int findClosestPrime(int size){
 		
 	int* arr = new int[NUMOFPRIMES];
 
-	int line;
+	
 	
 	ifstream myfile;
 	myfile.open("first10000prime.txt");
@@ -49,13 +66,16 @@ int findClosestPrime(int size){
 		jold = j;
 		j =(begin + end)/2;
 	}
-	
-	return arr[j];
+
+    myfile.close();
+	int temp = arr[j];
+    delete []arr;
+	return temp;
 
 }
 
 
 template <class T>
 HashTable<T>::~HashTable(){
-	delete table;
+	delete []table;
 }
