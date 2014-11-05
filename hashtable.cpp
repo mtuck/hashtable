@@ -2,7 +2,6 @@ const int NUMOFPRIMES = 10000;
 const int MAXTABLESIZE = 104729;   //max number of key the constructor will take is MAXTABLESIZE/2
 
 int findClosestPrime(int size);
-#include "hashtable.h"
 #include <iostream>
 #include<fstream>
 
@@ -19,10 +18,10 @@ HashTable<T>::HashTable(int size){
 	
 	table = new int[size];
 	tableSize = size;
-	/*
+	
 	for(int i = 0; i<= 1; i++)  //why will this not work wtf
 		table[i] = 0;
-	*/
+	
 		table[0] = 0;  //but this will
 		table[1] = 0;
 	
