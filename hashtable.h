@@ -1,8 +1,6 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
-
-#include <iostream>
 using namespace std;
 
 template <class T>
@@ -27,7 +25,7 @@ public:
 	~HashTable();
 private:
 	T * table;
+	int tableSize;
 };
 
-#include "hashtable.cpp"
 #endif //HASHTABLE_H
