@@ -28,7 +28,8 @@ public:
 	bool isEmpty() const;
 	void clearTable();
 	void pirntTable(ostream& os) const;
-	void showFill();
+	void ShowFill() const;
+	void ShowContents() const;
 	~HashTable();
 private:
 	int * table;
@@ -37,9 +38,27 @@ private:
 
 
 
+template <class T>
+void HashTable<T>::ShowContents() const{
+	cout<<"\n\n|Location\tData\t|\n";
+	for(int i=0; i < tableSize; i++){
+		if(table[i] != 0){
+			cout<<"|-----------------------|\n";
+			cout<<"|"<<i<<"\t\t"<<table[i]<<"\t|\n";
+		
+		}
+			
+	}
+
+
+
+}
+
+
+
 
 template <class T>
-void HashTable<T>::showFill(){
+void HashTable<T>::ShowFill() const{
 	cout<<"\n\n";
 	for(int i = 0; i < tableSize; i++){
 		cout<<"|--------|\n";
@@ -56,15 +75,16 @@ HashTable<T>::HashTable(){}
 
 template <class T>
 HashTable<T>::HashTable(int size){
-	size = size * 2 + 1;  //will always be odd
+	size = size * 2 + 1;  			//will always be odd
 	size = findClosestPrime(size);
 	
 	table = new int[size];
 	tableSize = size;
 	
-	for(int l = 0; l< size; l++)  //why will this not work wtf
+	for(int l = 0; l< size; l++)  
 		table[l] = 0;
-	table[2]=2;
+	table[2]=2000;
+	table[1]=99999;
 
 	cout<<"table created of size "<<size;
 }

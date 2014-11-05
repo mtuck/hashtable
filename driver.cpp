@@ -4,7 +4,8 @@ using namespace std;
 
 int main(){
 	HashTable<int> l(4);
-	l.showFill();
+	l.ShowFill();
+	l.ShowContents();
 
   return 0;
 }
