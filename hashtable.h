@@ -1,6 +1,7 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
-#include<fstream>
+#include <fstream>
+#include <cmath>
 
 const int NUMOFPRIMES = 10000;  
 const int MAXTABLESIZE = 104729;   //max number of key the constructor will take is MAXTABLESIZE/2
@@ -20,7 +21,11 @@ public:
 	HashTable(int size);
 	HashTable(const HashTable<T>& n);
 	HashTable& operator =(const HashTable<T>& rhs);
-	bool insert(T data);
+	int findClosestPrime(int size);
+	int Insert(T key);
+	int makeKey(T key);
+	bool tableFull();
+	
 	bool remove(T data);
 	bool search(T data) const;
 	T howMany() const;
@@ -39,6 +44,51 @@ private:
 
 
 template <class T>
+int HashTable<T>::Insert(T key){
+	int tries = 1;
+	int slot = makeKey(key)%tableSize;	                //makeKey is function that needs to be specialized
+	
+	if(tableFull()){
+		cout<<"table is full";
+		return 0;
+	}
+	
+	while(table[slot] != 0){
+		if(table[slot] == key){
+			cout<<"Duplicates are not allowed";
+			return 0;
+		}
+		else
+			slot += int(pow(2,tries))%tableSize;
+		
+		tries++;
+	}
+	
+	table[slot] = key;
+	return tries;
+
+}
+
+
+template <class T>
+bool HashTable<T>::tableFull(){
+	
+	for(int i = 0; i < tableSize; i++){
+		if(table[i] == 0)
+			return false;
+	
+	}
+	return true;
+}
+
+
+template <class T>
+int HashTable<T>::makeKey(T key){
+	return key;
+}
+
+
+template <class T>
 void HashTable<T>::ShowContents() const{
 	cout<<"\n\n|Location\tData\t|\n";
 	for(int i=0; i < tableSize; i++){
@@ -49,8 +99,6 @@ void HashTable<T>::ShowContents() const{
 		}
 			
 	}
-
-
 
 }
 
@@ -71,7 +119,7 @@ void HashTable<T>::ShowFill() const{
 }
 
 template <class T>
-HashTable<T>::HashTable(){}
+HashTable<T>::HashTable():tableSize(0),table(0){}
 
 template <class T>
 HashTable<T>::HashTable(int size){
@@ -83,8 +131,7 @@ HashTable<T>::HashTable(int size){
 	
 	for(int l = 0; l< size; l++)  
 		table[l] = 0;
-	table[2]=2000;
-	table[1]=99999;
+
 
 	cout<<"table created of size "<<size;
 }
@@ -93,8 +140,8 @@ HashTable<T>::HashTable(int size){
 
 
 
-
-int findClosestPrime(int size){
+template <class T>
+int HashTable<T>::findClosestPrime(int size){
 	if(size > MAXTABLESIZE)
 		return 0;
 		
