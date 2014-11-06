@@ -93,6 +93,7 @@ HashTable<T>::HashTable(const HashTable<T>& n){
 //=============================================================================
 template <class T>
 int HashTable<T>::Insert(T key){
+    int newSlot;
 	if(tableSize < 1 || !table) return 0;
 	
 	int tries = 1;
@@ -101,8 +102,11 @@ int HashTable<T>::Insert(T key){
 		cout<<"table is full";
 		return 0;
 	}
-	
-	table[NewSlot(key, tries)] = key;
+	newSlot = NewSlot(key, tries);
+    if(newSlot >= 0)
+	   table[newSlot] = key;
+    else 
+        tries = 0;
 	return tries;
 }
 
@@ -158,7 +162,7 @@ int  HashTable<T>::NewSlot(T key, int& tries){
 	while(table[slot] != 0){
 		if(table[slot] == key){
 			cout<<"Duplicates are not allowed";
-			return 0;
+			return -1;
 		}
 		slot++;        //start linear probing for slot if it has been threw table more than 3 times
 		tries++;
@@ -257,7 +261,7 @@ int HashTable<T>::Search(int key) const{
 //Function: Constructor (Default)
 //=============================================================================
 template <class T>
-HashTable<T>::HashTable():tableSize(0),table(0){}
+HashTable<T>::HashTable():table(0),tableSize(0){}
 
 
 //=============================================================================
