@@ -3,17 +3,19 @@
 #include <fstream>
 #include <cmath>
 
+using namespace std;
 const int NUMOFPRIMES = 10000;  
 const int MAXTABLESIZE = 104729;   //max number of key the constructor will take is MAXTABLESIZE/2
 
 int findClosestPrime(int size);
 
-using namespace std;
-
 template <class T>
 class HashTable;
 
 
+//=============================================================================
+//Class: HashTable
+//=============================================================================
 template <class T>
 class HashTable{
 public:
@@ -21,111 +23,122 @@ public:
 	HashTable(int size);
 	HashTable(const HashTable<T>& n);
 	HashTable& operator =(const HashTable<T>& rhs);
-	int findClosestPrime(int size);
+	~HashTable();
+	
 	int Insert(T key);
-	int makeKey(T key);
-	bool tableFull();
+	int MakeKey(T key);
 	int NewSlot(T key, int& tries);
 	int Remove(T key);
+	void ClearTable();
 	
-	bool remove(T data);
-	bool search(T data) const;
-	T howMany() const;
-	bool isFull() const;
-	bool isEmpty() const;
-	void clearTable();
-	void pirntTable(ostream& os) const;
+	bool Search(T data) const;
+	void PrintTable(ostream& os) const;
 	void ShowFill() const;
 	void ShowContents() const;
-	~HashTable();
+
 private:
+	int FindClosestPrime(int size);
+	bool TableFull() const;
+	bool TableEmpty() const;
+	
 	int * table;
 	int tableSize;
 };
 
 
-
+//=============================================================================
+//Class:    HashTable
+//Function: Insert
+//=============================================================================
 template <class T>
 int HashTable<T>::Insert(T key){
 	int tries = 1;
-              
 	
-	if(tableFull()){
+	if(TableFull()){
 		cout<<"table is full";
 		return 0;
 	}
 	
 	table[NewSlot(key, tries)] = key;
 	return tries;
-
 }
 
 
+//=============================================================================
+//Class:    HashTable
+//Function: Remove
+//=============================================================================
 template <class T>
 int HashTable<T>::Remove(T key){
-		int intKey = makeKey(key);
-		int start =	 intKey%tableSize; //makeKey is function that needs to be specialized
-		int slot = start;
-		int tries = 1;
-		
+	int intKey = MakeKey(key);
+	int start =	 intKey%tableSize; //makeKey is function that needs to be specialized
+	int slot = start;
+	int tries = 1;
 	
+	while(table[slot] != key && table[slot] != 0){
+		if(tries > tableSize) return 0;
+		slot++;
+		tries++;
+	}
 		
-		while(table[slot] != key && table[slot] != 0){
-			if(tries > tableSize) return 0;
-			slot++;
-			tries++;
-		}
+	if(table[slot] != key) return 0;
 		
-		if(table[slot] != key) return 0;
-		
-		table[slot] = 0;
-		return tries;
-			
-		
-			
+	table[slot] = 0;
+	return tries;
 }
 
+
+//=============================================================================
+//Class:    HashTable
+//Function: NewSlot
+//=============================================================================
 template <class T>
 int  HashTable<T>::NewSlot(T key, int& tries){
-		int intKey = makeKey(key);
-		int start =	 intKey%tableSize; //makeKey is function that needs to be specialized
-		int slot = start;	  
+	int intKey = MakeKey(key);
+	int start =	 intKey%tableSize; //makeKey is function that needs to be specialized
+	int slot = start;	  
 
-		
-		while(table[slot] != 0){
+	while(table[slot] != 0){
 		if(table[slot] == key){
 			cout<<"Duplicates are not allowed";
 			return 0;
 		}
-	
-				
 		slot++;        //start linear probing for slot if it has been threw table more than 3 times
 		tries++;
 	}
-	
+
 	return slot;
-	
 }
 
 
+//=============================================================================
+//Class:    HashTable
+//Function: TableFull
+//=============================================================================
 template <class T>
-bool HashTable<T>::tableFull(){
-	
+bool HashTable<T>::TableFull()const{
 	for(int i = 0; i < tableSize; i++){
 		if(table[i] == 0)
 			return false;
-	
 	}
 	return true;
 }
 
 
+//=============================================================================
+//Class:    HashTable
+//Function: MakeKey
+//=============================================================================
 template <class T>
-int HashTable<T>::makeKey(T key){
+int HashTable<T>::MakeKey(T key){
 	return key;
 }
 
 
+//=============================================================================
+//Class:    HashTable
+//Function: ShowContents
+//=============================================================================
 template <class T>
 void HashTable<T>::ShowContents() const{
 	cout<<"\n\n|Location\tData\t|\n";
@@ -133,16 +146,15 @@ void HashTable<T>::ShowContents() const{
 		if(table[i] != 0){
 			cout<<"|-----------------------|\n";
 			cout<<"|"<<i<<"\t\t"<<table[i]<<"\t|\n";
-		
 		}
-			
 	}
-
 }
 
 
-
-
+//=============================================================================
+//Class:    HashTable
+//Function: Insert
+//=============================================================================
 template <class T>
 void HashTable<T>::ShowFill() const{
 	cout<<"\n\n";
@@ -156,13 +168,23 @@ void HashTable<T>::ShowFill() const{
 	cout<<"|--------|\n";
 }
 
+
+//=============================================================================
+//Class:    HashTable
+//Function: Constructor (Default)
+//=============================================================================
 template <class T>
 HashTable<T>::HashTable():tableSize(0),table(0){}
 
+
+//=============================================================================
+//Class:    HashTable
+//Function: Constructor (Size)
+//=============================================================================
 template <class T>
 HashTable<T>::HashTable(int size){
 	size = size * 2 + 1;  			//will always be odd
-	size = findClosestPrime(size);
+	size = FindClosestPrime(size);
 	
 	table = new int[size];
 	tableSize = size;
@@ -175,20 +197,20 @@ HashTable<T>::HashTable(int size){
 }
 
 
-
-
-
+//=============================================================================
+//Class:    HashTable
+//Function: FindClosestPrime
+//=============================================================================
 template <class T>
-int HashTable<T>::findClosestPrime(int size){
+int HashTable<T>::FindClosestPrime(int size){
 	if(size > MAXTABLESIZE)
 		return 0;
 		
 	int* arr = new int[NUMOFPRIMES];
-
-
 	
 	ifstream myfile;
 	myfile.open("first10000prime.txt");
+	
 	for(int i = 0; i < NUMOFPRIMES ; i++){
 		myfile >> arr[i];
 	}
@@ -206,13 +228,17 @@ int HashTable<T>::findClosestPrime(int size){
 		jold = j;
 		j =(begin + end)/2;
 	}
+	
 	int temp = arr[j];
 	delete []arr;
 	return temp;
-
 }
 
 
+//=============================================================================
+//Class:    HashTable
+//Function: Destructor
+//=============================================================================
 template <class T>
 HashTable<T>::~HashTable(){
 	delete []table;
