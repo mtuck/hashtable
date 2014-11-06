@@ -26,20 +26,18 @@ public:
 	~HashTable();
 	
 	int Insert(T key);
-	int MakeKey(T key);
-	int NewSlot(T key, int& tries);
 	int Remove(T key);
 	void ClearTable();
 	
 	int Search(int key) const;
-	void PrintTable(ostream& os) const;
 	void ShowFill() const;
 	void ShowContents() const;
-
-private:
-	int FindClosestPrime(int size);
 	bool TableFull() const;
 	bool TableEmpty() const;
+
+private:
+	int NewSlot(T key, int& tries);
+	int FindClosestPrime(int size);
 	
 	int * table;
 	int tableSize;
@@ -155,8 +153,7 @@ void  HashTable<T>::ClearTable(){
 //=============================================================================
 template <class T>
 int  HashTable<T>::NewSlot(T key, int& tries){
-	int intKey = MakeKey(key);
-	int start =	 intKey%tableSize; //makeKey is function that needs to be specialized
+	int start =	 key%tableSize; //makeKey is function that needs to be specialized
 	int slot = start;	  
 
 	while(table[slot] != 0){
@@ -184,16 +181,6 @@ bool HashTable<T>::TableFull()const{
 			return false;
 	}
 	return true;
-}
-
-
-//=============================================================================
-//Class:    HashTable
-//Function: MakeKey
-//=============================================================================
-template <class T>
-int HashTable<T>::MakeKey(T key){
-	return key;
 }
 
 
