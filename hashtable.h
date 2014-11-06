@@ -133,6 +133,17 @@ int HashTable<T>::Remove(T key){
 	return tries;
 }
 
+//=============================================================================
+//Class:    HashTable
+//Function: ClearTable
+//=============================================================================
+template <class T>
+void  HashTable<T>::ClearTable(){
+	if(tableSize < 1 || !table) return;
+	for(int i=0;i<tableSize;i++){
+		table[i]=0;
+	}
+}
 
 //=============================================================================
 //Class:    HashTable

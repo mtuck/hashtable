@@ -19,6 +19,12 @@ int main(){
 	j.Remove(2);
 	j.ShowContents();
 	l.ShowContents();
+	l.ClearTable();
+	cout<<endl<<"Cleared table:";
+	l.ShowContents();
+	l.ClearTable();
+	cout<<endl<<"Cleared empty table:";
+	l.ShowContents();
 
   return 0;
 }
