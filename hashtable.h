@@ -95,157 +95,190 @@ HashTable<T>::HashTable(const HashTable<T>& n){
 //=============================================================================
 //Class:    HashTable
 //Function: Insert
+//Precondition: Key is value of item to be inserted.
+//Postcondition: Item will be inserted if there is at least 1 slot available
+//in table.
 //=============================================================================
 template <class T>
 int HashTable<T>::Insert(T key){
+    int result = 0;
     int newSlot;
-	if(tableSize < 1 || !table) return 0;
+	if(tableSize > 0 && table){
 	
-	int tries = 1;
-	
-	if(TableFull()){
-		cout<<"table is full";
-		return 0;
-	}
-	newSlot = NewSlot(key, tries);
-    if(newSlot >= 0)
-	   table[newSlot] = key;
-    else 
-        tries = 0;
-	return tries;
+	   if(TableFull()){
+	       cout<<"table is full";
+	   }
+	   else{
+	       int tries = 1;
+           newSlot = NewSlot(key, tries);
+           if(newSlot >= 0){
+	           table[newSlot] = key;
+               result = tries;
+           }
+        }
+    }
+
+    return result;
 }
 
 
 //=============================================================================
 //Class:    HashTable
 //Function: Remove
+//Precondition: Key is value of item to be removed.
+//Postcondition: Item will be removed if in table. 
 //=============================================================================
 template <class T>
 int HashTable<T>::Remove(T key){
-	if(tableSize < 1 || !table) return 0;
+    int result = 0;
+
+	if(tableSize > 0 && table){
 	
-	int start =	 key%tableSize;
-	int slot = start;
-	int tries = 1;
+	   int slot = key%tableSize;
+       int tries = 1;
 	
-	while(table[slot] != key && table[slot] != 0){
-		if(tries > tableSize) return 0;
-		slot++;
-		tries++;
-	}
+	    while(table[slot] != key && table[slot] != 0 && tries <= tableSize){
+		    slot++;
+		    tries++;
+	    }
 		
-	if(table[slot] != key) return 0;
-		
-	table[slot] = 0;
+	    if(table[slot] == key){
+    	    table[slot] = 0;
+            result = tries;
+        }
+    }
 	
-	return tries;
+	return result;
 }
 
 //=============================================================================
 //Class:    HashTable
 //Function: ClearTable
+//Precondition: N/A
+//Postcondition: Table will be empty.
 //=============================================================================
 template <class T>
 void  HashTable<T>::ClearTable(){
-	if(tableSize < 1 || !table) return;
-	for(int i=0;i<tableSize;i++){
-		table[i]=0;
-	}
+	if(tableSize > 0 && table){
+	   for(int i=0;i<tableSize;i++)
+		  table[i]=0;
+    }
 }
 
 //=============================================================================
 //Class:    HashTable
 //Function: NewSlot
+//Precondition: Key is item to be inserted by Insert function,
+//tries is an integer set to value 1, and table is not full.
+//Postcondition: Item will be inserted into table, tries will be set to number
+//of attempts made at finding an available slot.
 //=============================================================================
 template <class T>
 int  HashTable<T>::NewSlot(T key, int& tries){
-	int start =	 key%tableSize; //makeKey is function that needs to be specialized
-	int slot = start;	  
+    int result = -1;
 
-	while(table[slot] != 0){
-		if(table[slot] == key){
-			cout<<"Duplicates are not allowed";
-			return -1;
-		}
-		slot++;        //start linear probing for slot if it has been threw table more than 3 times
+	int slot = key%tableSize;
+
+	while(table[slot] != 0 && table[slot]!=key){
+		slot++;
 		tries++;
 	}
+	if(table[slot] == key)
+		cout<<"Duplicates are not allowed";
+    else if(table[slot]==0)
+        result = slot;
 
-	return slot;
+	return result;
 }
 
 
 //=============================================================================
 //Class:    HashTable
 //Function: TableFull
+//Precondition: N/A
+//Postcondition: Returns true if table is full.
 //=============================================================================
 template <class T>
 bool HashTable<T>::TableFull()const{
-	if(tableSize < 1 || !table) return true;
-	for(int i = 0; i < tableSize; i++){
-		if(table[i] == 0)
-			return false;
-	}
-	return true;
+    bool result = true;
+	if(tableSize > 0 && table){
+        int slot = 0;
+        while(slot < tableSize && result){
+            if(table[slot] == 0)
+                result = false;
+        }
+    }
+	return result;
 }
 
 
 //=============================================================================
 //Class:    HashTable
 //Function: ShowContents
+//Precondition: N/A
+//Postcondition: Shows the data contents of the table, including value and
+//location of each record.
 //=============================================================================
 template <class T>
 void HashTable<T>::ShowContents() const{
-	if(tableSize < 1 || !table) return;
+	if(tableSize > 0 && table){
 	
-	cout<<"\n\n|Location\tData\t|\n";
-	for(int i=0; i < tableSize; i++){
-		if(table[i] != 0){
-			cout<<"|-----------------------|\n";
-			cout<<"|"<<i<<"\t\t"<<table[i]<<"\t|\n";
-		}
-	}
+	   cout<<"\n\n|Location\tData\t|\n";
+	   for(int i=0; i < tableSize; i++){
+		  if(table[i] != 0){
+		  	 cout<<"|-----------------------|\n";
+			 cout<<"|"<<i<<"\t\t"<<table[i]<<"\t|\n";
+		  }
+	   }
+    }
 }
 
 
 //=============================================================================
 //Class:    HashTable
 //Function: ShowFill
+//Precondition: N/A
+//Postcondition: Show which records are filled and which are empty.
 //=============================================================================
 template <class T>
 void HashTable<T>::ShowFill() const{
 	
-	if(tableSize < 1 || !table) return;
-	cout<<"\n\n";
-	for(int i = 0; i < tableSize; i++){
-		cout<<"|--------|\n";
-		if(table[i]== 0)
-			cout<<"|"<<i<<"\t |\n";
-		else
-			cout<<"|"<<i<<"\tx|\n";
-	}
-	cout<<"|--------|\n";
+	if(tableSize > 0 && table){
+	   cout<<"\n\n";
+	   for(int i = 0; i < tableSize; i++){
+		  cout<<"|--------|\n";
+		  if(table[i]== 0)
+			 cout<<"|"<<i<<"\t |\n";
+		  else
+			 cout<<"|"<<i<<"\tx|\n";
+	   }
+	   cout<<"|--------|\n";
+    }
 }
 
 
 //=============================================================================
 //Class:    HashTable
 //Function: Search
+//Precondition: N/A
+//Postcondition: Return number of tries to find an item in a table, or 0 if
+//not found.
 //=============================================================================
 template <class T>
 int HashTable<T>::Search(int key) const{
+    int result = 0;
+
 	int slot = key % tableSize;
 	int tries = 1; //Returns 1 if key is in hash slot
 	
-	while (table[slot] != 0){
+	while (table[slot] != 0 && result == 0 && tries <= tableSize){
 		if (table[slot] == key)
-			return tries;
+			result = tries;
 		slot++; //Linear Probing
 		tries++;
 	}
 	
-	tries = 0; //If key not found
-	return tries;
+	return result;
 }
 
 
@@ -263,25 +296,26 @@ HashTable<T>::HashTable():table(0),tableSize(0){}
 //=============================================================================
 template <class T>
 HashTable<T>::HashTable(int size){
-	
-	size = size * 2 + 1;  			//will always be odd
-	if(size > MAXTABLESIZE)
-		size = MAXTABLESIZE;
-	else if (size < 0){
+
+	if (size < 0){
 		table = 0;
 		size = 0;
-		return;
-	} 
-	size = FindClosestPrime(size);
+	}
 	
+    else {
 
+	   size = size * 2 + 1;  			//will always be odd
+	   if(size > MAXTABLESIZE)
+		  size = MAXTABLESIZE;
+	   size = FindClosestPrime(size);
 	
-	table = new int[size];
-	tableSize = size;
+	   table = new int[size];
+	   tableSize = size;
 	
-	for(int l = 0; l< size; l++)  
-		table[l] = 0;
+	   for(int l = 0; l< size; l++)  
+		  table[l] = 0;
 
+    }
 
 	cout<<"table created of size "<<size;
 }
