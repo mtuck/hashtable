@@ -1,3 +1,10 @@
+//=============================================================================
+//CS355 Assignment #2
+//Martin Tuck, Victor Rogers, Tyler Yasaka
+//Documentation, current & previous project version can be found on Github:
+//https://github.com/mtuck/hashtable
+//=============================================================================
+
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 #include <fstream>
