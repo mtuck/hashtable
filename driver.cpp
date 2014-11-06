@@ -2,29 +2,122 @@
 #include "hashtable.h"
 using namespace std;
 
-int main(){
-	HashTable<int> l(4);
-	cout<<endl<<l.Insert(1)<<endl;
-	l.Insert(2);
-	l.Insert(999);
-	l.Insert(1000);
-	cout<<endl<<l.Insert(2001)<<endl;
-	l.Insert(2005);
-	cout<<endl<<l.Insert(2009)<<endl;
-	l.Insert(300010);
-	cout<<endl<<l.Remove(0)<<endl;
-	cout<<endl<<l.Remove(2001)<<endl;  //2001 takes 2 tries to add and 2 to remove
-	l.ShowContents();
-	HashTable<int> j;
-	j.Remove(2);
-	j.ShowContents();
-	l.ShowContents();
-	l.ClearTable();
-	cout<<endl<<"Cleared table:";
-	l.ShowContents();
-	l.ClearTable();
-	cout<<endl<<"Cleared empty table:";
-	l.ShowContents();
+void PrintMenu();
 
+int main(){
+	
+	int tableSize;
+	cout << "Enter Table Size \n>> ";
+	cin >> tableSize;
+	
+	HashTable<int> testHT(tableSize);
+	HashTable<int> testAssign;
+	int data;
+
+	PrintMenu();
+	cout << "-->";
+	char choice;
+	cin >> choice;
+	
+	while (choice != 'q' && choice != 'Q'){
+		if (choice == '!'){
+			HashTable<int> testCopy(testHT);
+			cout << "Result:" << "Print New Copy" << endl;
+			testCopy.ShowContents();
+			testCopy.Insert(-10000);
+			cout << "Result: " << "Print Modified Copy" << endl;
+			testCopy.ShowContents();
+			cout << "Result: " << "Print Original Test List" << endl;
+			testHT.ShowContents();
+			cout << endl;
+		}
+		else{
+			switch (choice){
+				case 'h':
+				case 'H': PrintMenu(); 
+					break;
+				case '+':
+					cin >> data;
+					testHT.Insert(data);
+					break;
+				case '-':
+					cin >> data;
+					testHT.Remove(data);
+					break;
+				case 'c':
+				case 'C':
+					testHT.ClearTable();
+					break;
+				case 'e':
+				case 'E':
+					/*
+					//TableEmpty not implemented at this time
+					
+					if (testHT.TableEmpty())
+						cout << "Result:" << "Table is Empty" << endl;
+					else
+						cout << "Result:" << "Table is Not Empty" << endl;
+					
+					*/
+					break;
+				case '#':
+					testAssign = testHT;
+					testAssign.Insert(-100000);
+					cout << "Modify New Table" << endl;
+					testAssign.ShowContents();
+					cout << "Old Table should not be affected" << endl;
+					testHT.ShowContents();
+					testAssign.~HashTable();
+					cout << "Destroy New Table" << endl;
+					cout << "Old Table should not be affected" << endl;
+					testHT.ShowContents();
+					break;
+				case '?':
+					cin >> data;
+					if (testHT.Search(data) != 0) //TODO: Add number of slots hit to find target
+						cout << "Result: " << data << "\tfound" << endl;
+					else
+						cout << "Result: " << data << "\tnot found" << endl;
+					break;
+				case 'p':
+				case 'P':
+					cout << "Print location values and data";
+					testHT.ShowContents();
+					break;
+				case 'z':
+				case 'Z':
+					testHT.ShowFill();
+					break;
+				default:
+					cout << "Invalid Choice, Please try again" << endl;
+			}
+			testHT.ShowContents();
+			cout << endl;
+			cout << "-->";
+			cin >> choice;
+		}
+	}
+	
   return 0;
+}
+
+void PrintMenu(){
+	cout << endl << endl;
+	cout << "         -Command Line Options-" << endl;
+	cout << "+=====+=====================================+\n";
+	cout << "| CMD |  Description                        |\n";
+	cout << "+=====+=====================================+\n";
+	cout << "| H   | Help: Show Command Line Options     |\n";
+	cout << "| +x  | Insert x                            |\n";
+	cout << "| -x  | Remove x                            |\n";
+	cout << "| C   | Clear the table                     |\n";
+	cout << "| E   | Check if table is empty             |\n";
+	cout << "| !   | Test copy constructor               |\n";
+	cout << "| #   | Test assignment operator            |\n";
+	cout << "| ?x  | Search table for x                  |\n";
+	cout << "| P   | Print the location values and data  |\n";
+	cout << "| Z   | Print a picture of the table        |\n";
+	cout << "| Q   | Quit the test program               |\n";
+	cout << "+=====+=====================================+";
+	cout << endl << endl << endl;
 }
