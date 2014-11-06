@@ -16,7 +16,6 @@ int main(){
 	cout<<endl<<l.Remove(2001)<<endl;  //2001 takes 2 tries to add and 2 to remove
 	l.ShowContents();
 	HashTable<int> j;
-	j = l;
 	j.Remove(2);
 	j.ShowContents();
 	l.ShowContents();

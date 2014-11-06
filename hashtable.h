@@ -45,6 +45,8 @@ private:
 	int tableSize;
 };
 
+
+
 //=============================================================================
 //Class:    HashTable
 //Function: AssignmentOperator
@@ -52,11 +54,16 @@ private:
 template <class T>
 HashTable<T>& HashTable<T>::operator =(const HashTable<T>& rhs){
 	delete [] table;
+	table = 0;
 	tableSize = rhs.tableSize;
-	table = new int [tableSize];
 	
-	for(int i = 0; i < tableSize; i++)
-		table[i] = rhs.table[i];
+	
+	if(tableSize > 0){
+		table = new int [tableSize];
+		
+		for(int i = 0; i < tableSize; i++)
+			table[i] = rhs.table[i];
+	}
 	return *this;
 
 }
@@ -68,10 +75,13 @@ HashTable<T>& HashTable<T>::operator =(const HashTable<T>& rhs){
 template <class T>
 HashTable<T>::HashTable(const HashTable<T>& n){
 	tableSize = n.tableSize;
-	table = new int[tableSize];
+	table = 0;
 	
-	for(int i = 0; i < tableSize; i++)
-		table[i] = n.table[i];
+	if(tableSize > 0){
+		table = new int[tableSize];
+		for(int i = 0; i < tableSize; i++)
+			table[i] = n.table[i];
+	}
 
 
 }
@@ -83,6 +93,8 @@ HashTable<T>::HashTable(const HashTable<T>& n){
 //=============================================================================
 template <class T>
 int HashTable<T>::Insert(T key){
+	if(tableSize < 1 || !table) return 0;
+	
 	int tries = 1;
 	
 	if(TableFull()){
@@ -101,6 +113,8 @@ int HashTable<T>::Insert(T key){
 //=============================================================================
 template <class T>
 int HashTable<T>::Remove(T key){
+	if(tableSize < 1 || !table) return 0;
+	
 	int intKey = MakeKey(key);
 	int start =	 intKey%tableSize; //makeKey is function that needs to be specialized
 	int slot = start;
@@ -115,6 +129,7 @@ int HashTable<T>::Remove(T key){
 	if(table[slot] != key) return 0;
 		
 	table[slot] = 0;
+	
 	return tries;
 }
 
@@ -148,6 +163,7 @@ int  HashTable<T>::NewSlot(T key, int& tries){
 //=============================================================================
 template <class T>
 bool HashTable<T>::TableFull()const{
+	if(tableSize < 1 || !table) return true;
 	for(int i = 0; i < tableSize; i++){
 		if(table[i] == 0)
 			return false;
@@ -172,6 +188,8 @@ int HashTable<T>::MakeKey(T key){
 //=============================================================================
 template <class T>
 void HashTable<T>::ShowContents() const{
+	if(tableSize < 1 || !table) return;
+	
 	cout<<"\n\n|Location\tData\t|\n";
 	for(int i=0; i < tableSize; i++){
 		if(table[i] != 0){
@@ -188,6 +206,8 @@ void HashTable<T>::ShowContents() const{
 //=============================================================================
 template <class T>
 void HashTable<T>::ShowFill() const{
+	
+	if(tableSize < 1 || !table) return;
 	cout<<"\n\n";
 	for(int i = 0; i < tableSize; i++){
 		cout<<"|--------|\n";
@@ -235,8 +255,18 @@ HashTable<T>::HashTable():tableSize(0),table(0){}
 //=============================================================================
 template <class T>
 HashTable<T>::HashTable(int size){
+	
 	size = size * 2 + 1;  			//will always be odd
+	if(size > MAXTABLESIZE)
+		size = MAXTABLESIZE;
+	else if (size < 0){
+		table = 0;
+		size = 0;
+		return;
+	} 
 	size = FindClosestPrime(size);
+	
+
 	
 	table = new int[size];
 	tableSize = size;
