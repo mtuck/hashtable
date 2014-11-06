@@ -124,8 +124,7 @@ template <class T>
 int HashTable<T>::Remove(T key){
 	if(tableSize < 1 || !table) return 0;
 	
-	int intKey = MakeKey(key);
-	int start =	 intKey%tableSize; //makeKey is function that needs to be specialized
+	int start =	 key%tableSize;
 	int slot = start;
 	int tries = 1;
 	
