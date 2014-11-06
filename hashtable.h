@@ -31,7 +31,7 @@ public:
 	int Remove(T key);
 	void ClearTable();
 	
-	bool Search(T data) const;
+	int Search(int key) const;
 	void PrintTable(ostream& os) const;
 	void ShowFill() const;
 	void ShowContents() const;
@@ -166,6 +166,27 @@ void HashTable<T>::ShowFill() const{
 			cout<<"|"<<i<<"\tx|\n";
 	}
 	cout<<"|--------|\n";
+}
+
+
+//=============================================================================
+//Class:    HashTable
+//Function: Search
+//=============================================================================
+template <class T>
+int HashTable<T>::Search(int key) const{
+	int slot = key % tableSize;
+	int tries = 1; //Returns 1 if key is in hash slot
+	
+	while (table[slot] != 0){
+		if (table[slot] == key)
+			return tries;
+		slot++; //Linear Probing
+		tries++;
+	}
+	
+	tries = 0; //If key not found
+	return tries;
 }
 
 
