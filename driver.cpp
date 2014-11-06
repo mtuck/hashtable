@@ -14,7 +14,10 @@ int main(){
 	l.Insert(300010);
 	cout<<endl<<l.Remove(0)<<endl;
 	cout<<endl<<l.Remove(2001)<<endl;  //2001 takes 2 tries to add and 2 to remove
-	l.ShowFill();
+	l.ShowContents();
+	HashTable<int> j(l);
+	j.Remove(2);
+	j.ShowContents();
 	l.ShowContents();
 
   return 0;

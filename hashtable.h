@@ -46,6 +46,24 @@ private:
 };
 
 
+
+
+//=============================================================================
+//Class:    HashTable
+//Function: CopyConstructor
+//=============================================================================
+template <class T>
+HashTable<T>::HashTable(const HashTable<T>& n){
+	tableSize = n.tableSize;
+	table = new int[tableSize];
+	
+	for(int i = 0; i < tableSize; i++)
+		table[i] = n.table[i];
+
+
+}
+
+
 //=============================================================================
 //Class:    HashTable
 //Function: Insert
