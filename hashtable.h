@@ -153,7 +153,7 @@ void HashTable<T>::ShowContents() const{
 
 //=============================================================================
 //Class:    HashTable
-//Function: Insert
+//Function: ShowFill
 //=============================================================================
 template <class T>
 void HashTable<T>::ShowFill() const{
