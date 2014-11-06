@@ -45,8 +45,21 @@ private:
 	int tableSize;
 };
 
+//=============================================================================
+//Class:    HashTable
+//Function: AssignmentOperator
+//=============================================================================
+template <class T>
+HashTable<T>& HashTable<T>::operator =(const HashTable<T>& rhs){
+	delete [] table;
+	tableSize = rhs.tableSize;
+	table = new int [tableSize];
+	
+	for(int i = 0; i < tableSize; i++)
+		table[i] = rhs.table[i];
+	return *this;
 
-
+}
 
 //=============================================================================
 //Class:    HashTable
