@@ -57,7 +57,6 @@ private:
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 HashTable& HashTable::operator =(const HashTable& rhs){
-	//delete [] table;					//This was causing "double free memory" error.
 	table = 0;
 	tableSize = rhs.tableSize;
 	
