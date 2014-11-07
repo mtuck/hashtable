@@ -87,7 +87,6 @@ HashTable::HashTable(const HashTable& n){
 			table[i] = n.table[i];
 	}
 
-
 }
 
 
@@ -205,6 +204,28 @@ bool HashTable::TableFull()const{
         while(slot < tableSize && result){
             if(table[slot] == 0)
                 result = false;
+            slot++;
+        }
+    }
+	return result;
+}
+
+
+//=============================================================================
+//Class:    HashTable
+//Function: TableEmpty
+//Precondition: N/A
+//Postcondition: Returns true if table is empty.
+//Author: Rogers,Tuck,Yasaka
+//=============================================================================
+bool HashTable::TableEmpty()const{
+    bool result = false;
+	if(tableSize > 0 && table){
+        int slot = 0;
+        while(slot < tableSize && !result){
+            if(table[slot] == 0)
+                result = true;
+            slot++;
         }
     }
 	return result;
