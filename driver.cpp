@@ -91,11 +91,11 @@ int main(){
 				default:
 					cout << "Invalid Choice, Please try again" << endl;
 			}
-			testHT.ShowContents();
-			cout << endl;
-			cout << "-->";
-			cin >> choice;
 		}
+		testHT.ShowContents();
+		cout << endl;
+		cout << "-->";
+		cin >> choice;
 	}
 	
   return 0;
