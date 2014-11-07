@@ -55,6 +55,7 @@ int main(){
 					else
 						cout << "Result:" << "Table is Not Empty" << endl;
 					break;
+				case 'f':
 				case 'F':
 					if (testHT.TableFull())
 						cout << "Result:" << "Table is Full" << endl;
