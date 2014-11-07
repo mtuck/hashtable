@@ -50,15 +50,16 @@ int main(){
 					break;
 				case 'e':
 				case 'E':
-					/*
-					//TableEmpty not implemented at this time
-					
 					if (testHT.TableEmpty())
 						cout << "Result:" << "Table is Empty" << endl;
 					else
 						cout << "Result:" << "Table is Not Empty" << endl;
-					
-					*/
+					break;
+				case 'F':
+					if (testHT.TableFull())
+						cout << "Result:" << "Table is Full" << endl;
+					else
+						cout << "Result:" << "Table is Not Full" << endl;
 					break;
 				case '#':
 					testAssign = testHT;
@@ -112,6 +113,7 @@ void PrintMenu(){
 	cout << "| -x  | Remove x                            |\n";
 	cout << "| C   | Clear the table                     |\n";
 	cout << "| E   | Check if table is empty             |\n";
+	cout << "| F   | Check if table is full              |\n";
 	cout << "| !   | Test copy constructor               |\n";
 	cout << "| #   | Test assignment operator            |\n";
 	cout << "| ?x  | Search table for x                  |\n";
