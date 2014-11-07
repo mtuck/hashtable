@@ -10,8 +10,8 @@ int main(){
 	cout << "Enter Table Size \n>> ";
 	cin >> tableSize;
 	
-	HashTable<int> testHT(tableSize);
-	HashTable<int> testAssign;
+	HashTable testHT(tableSize);
+	HashTable testAssign;
 	int data;
 
 	PrintMenu();
@@ -21,7 +21,7 @@ int main(){
 	
 	while (choice != 'q' && choice != 'Q'){
 		if (choice == '!'){
-			HashTable<int> testCopy(testHT);
+			HashTable testCopy(testHT);
 			cout << "Result:" << "Print New Copy" << endl;
 			testCopy.ShowContents();
 			testCopy.Insert(-10000);

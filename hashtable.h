@@ -16,24 +16,22 @@ const int MAXTABLESIZE = 104729;   //max number of key the constructor will take
 
 int findClosestPrime(int size);
 
-template <class T>
 class HashTable;
 
 
 //=============================================================================
 //Class: HashTable
 //=============================================================================
-template <class T>
 class HashTable{
 public:
 	HashTable();
 	HashTable(int size);
-	HashTable(const HashTable<T>& n);
-	HashTable& operator =(const HashTable<T>& rhs);
+	HashTable(const HashTable& n);
+	HashTable& operator =(const HashTable& rhs);
 	~HashTable();
 	
-	int Insert(T key);
-	int Remove(T key);
+	int Insert(int key);
+	int Remove(int key);
 	void ClearTable();
 	
 	int Search(int key) const;
@@ -43,7 +41,7 @@ public:
 	bool TableEmpty() const;
 
 private:
-	int NewSlot(T key, int& tries);
+	int NewSlot(int key, int& tries);
 	int FindClosestPrime(int size);
 	
 	int * table;
@@ -56,8 +54,7 @@ private:
 //Class:    HashTable
 //Function: AssignmentOperator
 //=============================================================================
-template <class T>
-HashTable<T>& HashTable<T>::operator =(const HashTable<T>& rhs){
+HashTable& HashTable::operator =(const HashTable& rhs){
 	delete [] table;
 	table = 0;
 	tableSize = rhs.tableSize;
@@ -77,8 +74,7 @@ HashTable<T>& HashTable<T>::operator =(const HashTable<T>& rhs){
 //Class:    HashTable
 //Function: CopyConstructor
 //=============================================================================
-template <class T>
-HashTable<T>::HashTable(const HashTable<T>& n){
+HashTable::HashTable(const HashTable& n){
 	tableSize = n.tableSize;
 	table = 0;
 	
@@ -99,8 +95,7 @@ HashTable<T>::HashTable(const HashTable<T>& n){
 //Postcondition: Item will be inserted if there is at least 1 slot available
 //in table.
 //=============================================================================
-template <class T>
-int HashTable<T>::Insert(T key){
+int HashTable::Insert(int key){
     int result = 0;
     int newSlot;
 	if(tableSize > 0 && table){
@@ -128,8 +123,7 @@ int HashTable<T>::Insert(T key){
 //Precondition: Key is value of item to be removed.
 //Postcondition: Item will be removed if in table. 
 //=============================================================================
-template <class T>
-int HashTable<T>::Remove(T key){
+int HashTable::Remove(int key){
     int result = 0;
 
 	if(tableSize > 0 && table){
@@ -157,8 +151,7 @@ int HashTable<T>::Remove(T key){
 //Precondition: N/A
 //Postcondition: Table will be empty.
 //=============================================================================
-template <class T>
-void  HashTable<T>::ClearTable(){
+void  HashTable::ClearTable(){
 	if(tableSize > 0 && table){
 	   for(int i=0;i<tableSize;i++)
 		  table[i]=0;
@@ -173,8 +166,7 @@ void  HashTable<T>::ClearTable(){
 //Postcondition: Item will be inserted into table, tries will be set to number
 //of attempts made at finding an available slot.
 //=============================================================================
-template <class T>
-int  HashTable<T>::NewSlot(T key, int& tries){
+int  HashTable::NewSlot(int key, int& tries){
     int result = -1;
 
 	int slot = key%tableSize;
@@ -198,8 +190,7 @@ int  HashTable<T>::NewSlot(T key, int& tries){
 //Precondition: N/A
 //Postcondition: Returns true if table is full.
 //=============================================================================
-template <class T>
-bool HashTable<T>::TableFull()const{
+bool HashTable::TableFull()const{
     bool result = true;
 	if(tableSize > 0 && table){
         int slot = 0;
@@ -219,8 +210,7 @@ bool HashTable<T>::TableFull()const{
 //Postcondition: Shows the data contents of the table, including value and
 //location of each record.
 //=============================================================================
-template <class T>
-void HashTable<T>::ShowContents() const{
+void HashTable::ShowContents() const{
 	if(tableSize > 0 && table){
 	
 	   cout<<"\n\n|Location\tData\t|\n";
@@ -240,8 +230,7 @@ void HashTable<T>::ShowContents() const{
 //Precondition: N/A
 //Postcondition: Show which records are filled and which are empty.
 //=============================================================================
-template <class T>
-void HashTable<T>::ShowFill() const{
+void HashTable::ShowFill() const{
 	
 	if(tableSize > 0 && table){
 	   cout<<"\n\n";
@@ -264,8 +253,7 @@ void HashTable<T>::ShowFill() const{
 //Postcondition: Return number of tries to find an item in a table, or 0 if
 //not found.
 //=============================================================================
-template <class T>
-int HashTable<T>::Search(int key) const{
+int HashTable::Search(int key) const{
     int result = 0;
 
 	int slot = key % tableSize;
@@ -286,16 +274,14 @@ int HashTable<T>::Search(int key) const{
 //Class:    HashTable
 //Function: Constructor (Default)
 //=============================================================================
-template <class T>
-HashTable<T>::HashTable():table(0),tableSize(0){}
+HashTable::HashTable():table(0),tableSize(0){}
 
 
 //=============================================================================
 //Class:    HashTable
 //Function: Constructor (Size)
 //=============================================================================
-template <class T>
-HashTable<T>::HashTable(int size){
+HashTable::HashTable(int size){
 
 	if (size < 0){
 		table = 0;
@@ -325,8 +311,7 @@ HashTable<T>::HashTable(int size){
 //Class:    HashTable
 //Function: FindClosestPrime
 //=============================================================================
-template <class T>
-int HashTable<T>::FindClosestPrime(int size){
+int HashTable::FindClosestPrime(int size){
 	if(size > MAXTABLESIZE)
 		return 0;
 		
@@ -363,8 +348,7 @@ int HashTable<T>::FindClosestPrime(int size){
 //Class:    HashTable
 //Function: Destructor
 //=============================================================================
-template <class T>
-HashTable<T>::~HashTable(){
+HashTable::~HashTable(){
 	delete []table;
 }
 
