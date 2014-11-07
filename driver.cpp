@@ -13,6 +13,7 @@ int main(){
 	HashTable testHT(tableSize);
 	HashTable testAssign;
 	int data;
+	int tries;
 
 	PrintMenu();
 	cout << "-->";
@@ -38,7 +39,9 @@ int main(){
 					break;
 				case '+':
 					cin >> data;
-					testHT.Insert(data);
+					tries = testHT.Insert(data);
+					if(tries>0)
+						cout << "\nInserted " << data << ", " << tries << " tries\n";
 					break;
 				case '-':
 					cin >> data;

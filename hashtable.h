@@ -57,10 +57,9 @@ private:
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 HashTable& HashTable::operator =(const HashTable& rhs){
-	delete [] table;
+	//delete [] table;					//This was causing "double free memory" error.
 	table = 0;
 	tableSize = rhs.tableSize;
-	
 	
 	if(tableSize > 0){
 		table = new int [tableSize];
@@ -68,8 +67,8 @@ HashTable& HashTable::operator =(const HashTable& rhs){
 		for(int i = 0; i < tableSize; i++)
 			table[i] = rhs.table[i];
 	}
+	
 	return *this;
-
 }
 
 //=============================================================================
@@ -177,8 +176,8 @@ int  HashTable::NewSlot(int key, int& tries){
 
 	int slot = key%tableSize;
 
-	while(table[slot] != 0 && table[slot]!=key){
-		slot++;
+	while(table[slot] != 0 && table[slot]!=key && tries <= tableSize){
+		slot = (slot+1) % tableSize;
 		tries++;
 	}
 	if(table[slot] == key)
@@ -219,12 +218,12 @@ bool HashTable::TableFull()const{
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 bool HashTable::TableEmpty()const{
-    bool result = false;
+    bool result = true;
 	if(tableSize > 0 && table){
         int slot = 0;
-        while(slot < tableSize && !result){
-            if(table[slot] == 0)
-                result = true;
+        while(slot < tableSize && result){
+            if(table[slot] > 0)
+                result = false;
             slot++;
         }
     }
@@ -294,7 +293,7 @@ int HashTable::Search(int key) const{
 	while (table[slot] != 0 && result == 0 && tries <= tableSize){
 		if (table[slot] == key)
 			result = tries;
-		slot++; //Linear Probing
+		slot = (slot+1) % tableSize; //Linear Probing
 		tries++;
 	}
 	
