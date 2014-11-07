@@ -1,6 +1,6 @@
 //=============================================================================
 //CS355 Assignment #2
-//Martin Tuck, Victor Rogers, Tyler Yasaka
+//by Victor Rogers, Martin Tuck, Tyler Yasaka
 //Documentation, current & previous project version can be found on Github:
 //https://github.com/mtuck/hashtable
 //=============================================================================
@@ -21,6 +21,7 @@ class HashTable;
 
 //=============================================================================
 //Class: HashTable
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 class HashTable{
 public:
@@ -53,6 +54,7 @@ private:
 //=============================================================================
 //Class:    HashTable
 //Function: AssignmentOperator
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 HashTable& HashTable::operator =(const HashTable& rhs){
 	delete [] table;
@@ -73,6 +75,7 @@ HashTable& HashTable::operator =(const HashTable& rhs){
 //=============================================================================
 //Class:    HashTable
 //Function: CopyConstructor
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 HashTable::HashTable(const HashTable& n){
 	tableSize = n.tableSize;
@@ -94,6 +97,7 @@ HashTable::HashTable(const HashTable& n){
 //Precondition: Key is value of item to be inserted.
 //Postcondition: Item will be inserted if there is at least 1 slot available
 //in table.
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 int HashTable::Insert(int key){
     int result = 0;
@@ -121,7 +125,8 @@ int HashTable::Insert(int key){
 //Class:    HashTable
 //Function: Remove
 //Precondition: Key is value of item to be removed.
-//Postcondition: Item will be removed if in table. 
+//Postcondition: Item will be removed if in table.
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 int HashTable::Remove(int key){
     int result = 0;
@@ -150,6 +155,7 @@ int HashTable::Remove(int key){
 //Function: ClearTable
 //Precondition: N/A
 //Postcondition: Table will be empty.
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 void  HashTable::ClearTable(){
 	if(tableSize > 0 && table){
@@ -165,6 +171,7 @@ void  HashTable::ClearTable(){
 //tries is an integer set to value 1, and table is not full.
 //Postcondition: Item will be inserted into table, tries will be set to number
 //of attempts made at finding an available slot.
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 int  HashTable::NewSlot(int key, int& tries){
     int result = -1;
@@ -189,6 +196,7 @@ int  HashTable::NewSlot(int key, int& tries){
 //Function: TableFull
 //Precondition: N/A
 //Postcondition: Returns true if table is full.
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 bool HashTable::TableFull()const{
     bool result = true;
@@ -209,6 +217,7 @@ bool HashTable::TableFull()const{
 //Precondition: N/A
 //Postcondition: Shows the data contents of the table, including value and
 //location of each record.
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 void HashTable::ShowContents() const{
 	if(tableSize > 0 && table){
@@ -229,6 +238,7 @@ void HashTable::ShowContents() const{
 //Function: ShowFill
 //Precondition: N/A
 //Postcondition: Show which records are filled and which are empty.
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 void HashTable::ShowFill() const{
 	
@@ -252,6 +262,7 @@ void HashTable::ShowFill() const{
 //Precondition: N/A
 //Postcondition: Return number of tries to find an item in a table, or 0 if
 //not found.
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 int HashTable::Search(int key) const{
     int result = 0;
@@ -273,6 +284,7 @@ int HashTable::Search(int key) const{
 //=============================================================================
 //Class:    HashTable
 //Function: Constructor (Default)
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 HashTable::HashTable():table(0),tableSize(0){}
 
@@ -280,6 +292,7 @@ HashTable::HashTable():table(0),tableSize(0){}
 //=============================================================================
 //Class:    HashTable
 //Function: Constructor (Size)
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 HashTable::HashTable(int size){
 
@@ -310,6 +323,7 @@ HashTable::HashTable(int size){
 //=============================================================================
 //Class:    HashTable
 //Function: FindClosestPrime
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 int HashTable::FindClosestPrime(int size){
 	if(size > MAXTABLESIZE)
@@ -347,6 +361,7 @@ int HashTable::FindClosestPrime(int size){
 //=============================================================================
 //Class:    HashTable
 //Function: Destructor
+//Author: Rogers,Tuck,Yasaka
 //=============================================================================
 HashTable::~HashTable(){
 	delete []table;
