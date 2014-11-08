@@ -57,6 +57,7 @@ private:
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 HashTable& HashTable::operator =(const HashTable& rhs){
+	delete table;
 	table = 0;
 	tableSize = rhs.tableSize;
 	
@@ -384,6 +385,7 @@ int HashTable::FindClosestPrime(int size){
 //=============================================================================
 HashTable::~HashTable(){
 	delete []table;
+	table = 0;
 }
 
 #endif //HASHTABLE_H
