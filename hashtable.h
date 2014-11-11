@@ -57,7 +57,7 @@ private:
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 HashTable& HashTable::operator =(const HashTable& rhs){
-	delete table;
+	delete [] table;
 	table = 0;
 	tableSize = rhs.tableSize;
 	
