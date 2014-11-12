@@ -103,7 +103,7 @@ int HashTable::Insert(int key){
 	if(tableSize > 0 && table){
 	
 	   if(TableFull()){
-	       cout<<"table is full";
+	       cout<<"Table is full\t";
 	   }
 	   else{
 	       int tries = 1;
@@ -113,7 +113,7 @@ int HashTable::Insert(int key){
                result = tries;
            }
            else
-           	cout<<"Item could not be added";
+           	cout<<"Item could not be added\n";
         }
     }
 
