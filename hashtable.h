@@ -403,6 +403,7 @@ void HashTable::Rehash(){
 		newsize = MAXTABLESIZE;
 	newsize = FindClosestPrime(newsize);
 	slot * newtable = new slot[newsize];
+	slotsTaken = 0;
 	//Iterates through the current table
 	for(int i=0;i<tableSize;i++){
 		//Checks if the slot has a value to copy
@@ -414,6 +415,7 @@ void HashTable::Rehash(){
 				current_slot = (current_slot+1) % newsize;
 			newtable[current_slot].value = key;
 			newtable[current_slot].filled = true;
+			slotsTaken++;
 		}
 	}
 	//Reset old table and assign new table to it
