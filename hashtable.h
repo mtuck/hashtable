@@ -59,11 +59,13 @@ public:
 
 private:
 	int NewSlot(int key, int& tries);
-	int FindClosestPrime(int size);
+	int FindClosestPrime(int size) const;
+	int Absolute(int number) const;
 	void Rehash();
 	
 	slot * table;
 	int tableSize;
+	int originalSize;	//Allows table to be fully reset
 	int slotsTaken;
 };
 
@@ -76,13 +78,16 @@ private:
 HashTable& HashTable::operator =(const HashTable& rhs){
 	delete [] table;
 	table = 0;
-	tableSize = rhs.tableSize;
+	originalSize = tableSize = rhs.tableSize;
+	slotsTaken = rhs.slotsTaken;
 	
 	if(tableSize > 0){
 		table = new slot [tableSize];
-		
-		for(int i = 0; i < tableSize; i++)
+		for(int i = 0; i < tableSize; i++) {
 			table[i].value = rhs.table[i].value;
+			table[i].filled = rhs.table[i].filled;
+			table[i].active = rhs.table[i].active;
+		}
 	}
 	
 	return *this;
@@ -94,13 +99,17 @@ HashTable& HashTable::operator =(const HashTable& rhs){
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 HashTable::HashTable(const HashTable& n){
-	tableSize = n.tableSize;
+	originalSize = tableSize = n.tableSize;
+	slotsTaken = n.slotsTaken;
 	table = 0;
 	
 	if(tableSize > 0){
 		table = new slot[tableSize];
-		for(int i = 0; i < tableSize; i++)
+		for(int i = 0; i < tableSize; i++) {
 			table[i].value = n.table[i].value;
+			table[i].filled = n.table[i].filled;
+			table[i].active = n.table[i].active;
+		}
 	}
 
 }
@@ -155,7 +164,7 @@ int HashTable::Remove(int key){
 
 	if(tableSize > 0 && table){
 	
-	   int current_slot = key%tableSize;
+	   int current_slot = Absolute(key%tableSize);
        int tries = 1;
 	
 		//Falls out of loop if the remove is performed, if an unfilled slot is encountered, or the whole table has been searched
@@ -182,11 +191,9 @@ int HashTable::Remove(int key){
 //=============================================================================
 void  HashTable::ClearTable(){
 	if(tableSize > 0 && table){
-	   for(int i=0; i<tableSize; i++){
-		  table[i].value = 0;
-		  table[i].filled = false;
-		  table[i].active = true;
-	   }
+	   delete []table;
+	   tableSize = originalSize;
+	   table = new slot [tableSize];
 	   slotsTaken = 0;
     }
 }
@@ -204,7 +211,9 @@ int  HashTable::NewSlot(int key, int& tries){
     int result = -1;
     bool duplicate = false;
 
-	int current_slot = key%tableSize;
+	int current_slot;
+	
+	current_slot = Absolute(key%tableSize);
 
 	//Loop terminates if empty slot is found, if all slots are checked, or if an unfilled active slot holds the same value as key
 	while(table[current_slot].filled && tries <= tableSize && !duplicate){
@@ -320,7 +329,7 @@ void HashTable::ShowFill() const{
 int HashTable::Search(int key) const{
     int result = 0;
 
-	int current_slot = key % tableSize;
+	int current_slot = Absolute(key % tableSize);
 	int tries = 1; //Returns 1 if key is in hash slot
 	//Breaks out of loop if unfilled slot is encountered, if a match is found,
 	//or if the entire table has been searched
@@ -341,7 +350,7 @@ int HashTable::Search(int key) const{
 //Function: Constructor (Default)
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
-HashTable::HashTable():table(0),tableSize(0),slotsTaken(0){}
+HashTable::HashTable():table(0),tableSize(0),originalSize(0),slotsTaken(0){}
 
 
 //=============================================================================
@@ -373,6 +382,8 @@ HashTable::HashTable(int size){
 		  //Don't need this because struct initializes values automatically
 
     }
+    
+    originalSize = tableSize;
 
 	cout<<"table created of size "<<size;
 }
@@ -397,10 +408,10 @@ void HashTable::Rehash(){
 		//Checks if the slot has a value to copy
 		if(table[i].filled && table[i].active){
 			key = table[i].value;
-			current_slot = key%tableSize;
+			current_slot = Absolute(key%newsize);
 			//Loop terminates once empty slot is found
 			while(newtable[current_slot].filled)
-				current_slot = (current_slot+1) % tableSize;
+				current_slot = (current_slot+1) % newsize;
 			newtable[current_slot].value = key;
 			newtable[current_slot].filled = true;
 		}
@@ -418,7 +429,21 @@ void HashTable::Rehash(){
 //Function: FindClosestPrime
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
-int HashTable::FindClosestPrime(int size){
+int HashTable::Absolute(int number)const{
+	if(number >= 0)
+		return number;
+	else
+		return -1 * number;
+}
+
+
+
+//=============================================================================
+//Class:    HashTable
+//Function: FindClosestPrime
+//Author: Rogers,Tuck,Yasaka
+//=============================================================================
+int HashTable::FindClosestPrime(int size)const{
 	if(size > MAXTABLESIZE)
 		return 0;
 		
