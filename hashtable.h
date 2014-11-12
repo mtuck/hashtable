@@ -215,16 +215,19 @@ int  HashTable::NewSlot(int key, int& tries){
 	
 	current_slot = Absolute(key%tableSize);
 
-	//Loop terminates if empty slot is found, if all slots are checked, or if an unfilled active slot holds the same value as key
-	while(table[current_slot].filled && tries <= tableSize && !duplicate){
-		if(table[current_slot].value == key && table[current_slot].filled && table[current_slot].active) {
+	//Loop terminates if empty slot is found, an inactive slot is found, if all slots have been checked,
+	//or if an unfilled active slot holds the same value as key
+	while(table[current_slot].filled && table[current_slot].active && tries <= tableSize && !duplicate){
+		//if slot holds the same value, it is a duplicate
+		if(table[current_slot].value == key) {
 			cout << "Duplicates are not allowed";
 			duplicate = true;
 		}
 		current_slot = (current_slot+1) % tableSize;
 		tries++;
 	}
-    if(table[current_slot].filled==false && !duplicate)
+    //If slot is unfilled or inactive, and if a duplicate wasn't found, return the slot.
+    if( (!table[current_slot].filled || !table[current_slot].active) && !duplicate)
         result = current_slot;
 
 	return result;
@@ -239,15 +242,15 @@ int  HashTable::NewSlot(int key, int& tries){
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 bool HashTable::TableFull()const{
-    bool result = true;
+    bool full = true;
 	if(tableSize > 0 && table){
         int current_slot = 0;
-        while(current_slot < tableSize && result){
-			result = table[current_slot].filled;
+        while(current_slot < tableSize && full){
+			full = (table[current_slot].filled && table[current_slot].active);
             current_slot++;
         }
     }
-	return result;
+	return full;
 }
 
 
@@ -259,15 +262,15 @@ bool HashTable::TableFull()const{
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 bool HashTable::TableEmpty()const{
-    bool result = true;
+    bool empty = true;
 	if(tableSize > 0 && table){
         int current_slot = 0;
-        while(current_slot < tableSize && result){
-			result = !table[current_slot].filled;
+        while(current_slot < tableSize && empty){
+			empty = (!table[current_slot].filled || !table[current_slot].active);
             current_slot++;
         }
     }
-	return result;
+	return empty;
 }
 
 
@@ -308,7 +311,7 @@ void HashTable::ShowFill() const{
 	   cout<<"\n\n";
 	   for(int i = 0; i < tableSize; i++){
 		  cout<<"|--------|\n";
-		  if(table[i].filled)
+		  if(table[i].filled && table[i].active)
 			 cout<<"|"<<i<<"\tx|\n";
 		  else
 			 cout<<"|"<<i<<"\t |\n";
@@ -415,6 +418,7 @@ void HashTable::Rehash(){
 				current_slot = (current_slot+1) % newsize;
 			newtable[current_slot].value = key;
 			newtable[current_slot].filled = true;
+			newtable[current_slot].active = true;
 			slotsTaken++;
 		}
 	}
