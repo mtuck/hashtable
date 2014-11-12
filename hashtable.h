@@ -112,6 +112,8 @@ int HashTable::Insert(int key){
 	           table[newSlot] = key;
                result = tries;
            }
+           else
+           	cout<<"Item could not be added";
         }
     }
 
@@ -127,23 +129,22 @@ int HashTable::Insert(int key){
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 int HashTable::Remove(int key){
-    int result = 0;
+	int result = 0;
 
-	if(tableSize > 0 && table){
+	int slot = key % tableSize;
+	int tries = 1; //Returns 1 if key is in hash slot
 	
-	   int slot = key%tableSize;
-       int tries = 1;
+	while (table[slot] != 0 && result == 0 && tries <= tableSize){
+		if (table[slot] == key){
+			table[slot] = -1;
+			result = ++tries;
+			break;
+		}
+		slot = (slot+1) % tableSize; //Linear Probing
+		tries++;
+	}
 	
-	    while(table[slot] != key && table[slot] != 0 && tries <= tableSize){
-		    slot++;
-		    tries++;
-	    }
-		
-	    if(table[slot] == key){
-    	    table[slot] = 0;
-            result = tries;
-        }
-    }
+
 	
 	return result;
 }
@@ -176,13 +177,13 @@ int  HashTable::NewSlot(int key, int& tries){
 
 	int slot = key%tableSize;
 
-	while(table[slot] != 0 && table[slot]!=key && tries <= tableSize){
+	while(table[slot] != 0 && table[slot] != -1 && table[slot] !=key && tries <= tableSize){
 		slot = (slot+1) % tableSize;
 		tries++;
 	}
 	if(table[slot] == key)
 		cout<<"Duplicates are not allowed";
-    else if(table[slot]==0)
+    else if(table[slot]==0 || table[slot] == -1)
         result = slot;
 
 	return result;
@@ -201,7 +202,7 @@ bool HashTable::TableFull()const{
 	if(tableSize > 0 && table){
         int slot = 0;
         while(slot < tableSize && result){
-            if(table[slot] == 0)
+            if(table[slot] == 0 || table[slot] == -1)
                 result = false;
             slot++;
         }
@@ -244,7 +245,7 @@ void HashTable::ShowContents() const{
 	
 	   cout<<"\n\n|Location\tData\t|\n";
 	   for(int i=0; i < tableSize; i++){
-		  if(table[i] != 0){
+		  if(table[i] > 0){
 		  	 cout<<"|-----------------------|\n";
 			 cout<<"|"<<i<<"\t\t"<<table[i]<<"\t|\n";
 		  }
@@ -266,7 +267,7 @@ void HashTable::ShowFill() const{
 	   cout<<"\n\n";
 	   for(int i = 0; i < tableSize; i++){
 		  cout<<"|--------|\n";
-		  if(table[i]== 0)
+		  if(table[i] <= 0)
 			 cout<<"|"<<i<<"\t |\n";
 		  else
 			 cout<<"|"<<i<<"\tx|\n";
