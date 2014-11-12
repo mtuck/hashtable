@@ -20,6 +20,22 @@ class HashTable;
 
 
 //=============================================================================
+//Struct: Slot
+//Author: Rogers,Tuck,Yasaka
+//=============================================================================
+struct slot{
+	int value;
+	//Tells whether or not this is an available slot for insertion
+	//Will become true when a value is inserted
+	bool filled;
+	//Tells whether or not this is a valid slot for search and removal
+	//Will become false when a value is removed
+	bool active;
+	slot():value(0),filled(false),active(true){};
+};
+
+
+//=============================================================================
 //Class: HashTable
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
@@ -44,11 +60,12 @@ public:
 private:
 	int NewSlot(int key, int& tries);
 	int FindClosestPrime(int size);
+	void Rehash();
 	
-	int * table;
+	slot * table;
 	int tableSize;
+	int slotsTaken;
 };
-
 
 
 //=============================================================================
@@ -62,10 +79,10 @@ HashTable& HashTable::operator =(const HashTable& rhs){
 	tableSize = rhs.tableSize;
 	
 	if(tableSize > 0){
-		table = new int [tableSize];
+		table = new slot [tableSize];
 		
 		for(int i = 0; i < tableSize; i++)
-			table[i] = rhs.table[i];
+			table[i].value = rhs.table[i].value;
 	}
 	
 	return *this;
@@ -81,9 +98,9 @@ HashTable::HashTable(const HashTable& n){
 	table = 0;
 	
 	if(tableSize > 0){
-		table = new int[tableSize];
+		table = new slot[tableSize];
 		for(int i = 0; i < tableSize; i++)
-			table[i] = n.table[i];
+			table[i].value = n.table[i].value;
 	}
 
 }
@@ -103,17 +120,22 @@ int HashTable::Insert(int key){
 	if(tableSize > 0 && table){
 	
 	   if(TableFull()){
-	       cout<<"Table is full\t";
+	       cout<<"table is full";
 	   }
 	   else{
 	       int tries = 1;
            newSlot = NewSlot(key, tries);
            if(newSlot >= 0){
-	           table[newSlot] = key;
+	           table[newSlot].value = key;
+	           table[newSlot].filled = true;
+	           table[newSlot].active = true;
                result = tries;
+               //Keep track of taken slots
+               slotsTaken++;
+               //If number of taken slots > half table size, rehash the table
+               if(slotsTaken > (tableSize/2))
+			       Rehash();
            }
-           else
-           	cout<<"Item could not be added\n";
         }
     }
 
@@ -129,22 +151,24 @@ int HashTable::Insert(int key){
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 int HashTable::Remove(int key){
-	int result = 0;
+    int result = 0;
 
-	int slot = key % tableSize;
-	int tries = 1; //Returns 1 if key is in hash slot
+	if(tableSize > 0 && table){
 	
-	while (table[slot] != 0 && result == 0 && tries <= tableSize){
-		if (table[slot] == key){
-			table[slot] = -1;
-			result = ++tries;
-			break;
-		}
-		slot = (slot+1) % tableSize; //Linear Probing
-		tries++;
-	}
+	   int current_slot = key%tableSize;
+       int tries = 1;
 	
-
+		//Falls out of loop if the remove is performed, if an unfilled slot is encountered, or the whole table has been searched
+	    while(result==0 && table[current_slot].filled && tries<=tableSize){
+			//If slot holds value and is an active slot
+			if(table[current_slot].value == key && table[current_slot].active){
+				table[current_slot].active = false;
+				result = tries;
+			}
+		    current_slot = (current_slot+1) % tableSize; //loops back to beginning of table when the end is reached
+		    tries++;
+	    }
+    }
 	
 	return result;
 }
@@ -158,8 +182,12 @@ int HashTable::Remove(int key){
 //=============================================================================
 void  HashTable::ClearTable(){
 	if(tableSize > 0 && table){
-	   for(int i=0;i<tableSize;i++)
-		  table[i]=0;
+	   for(int i=0; i<tableSize; i++){
+		  table[i].value = 0;
+		  table[i].filled = false;
+		  table[i].active = true;
+	   }
+	   slotsTaken = 0;
     }
 }
 
@@ -174,17 +202,21 @@ void  HashTable::ClearTable(){
 //=============================================================================
 int  HashTable::NewSlot(int key, int& tries){
     int result = -1;
+    bool duplicate = false;
 
-	int slot = key%tableSize;
+	int current_slot = key%tableSize;
 
-	while(table[slot] != 0 && table[slot] != -1 && table[slot] !=key && tries <= tableSize){
-		slot = (slot+1) % tableSize;
+	//Loop terminates if empty slot is found, if all slots are checked, or if an unfilled active slot holds the same value as key
+	while(table[current_slot].filled && tries <= tableSize && !duplicate){
+		if(table[current_slot].value == key && table[current_slot].filled && table[current_slot].active) {
+			cout << "Duplicates are not allowed";
+			duplicate = true;
+		}
+		current_slot = (current_slot+1) % tableSize;
 		tries++;
 	}
-	if(table[slot] == key)
-		cout<<"Duplicates are not allowed";
-    else if(table[slot]==0 || table[slot] == -1)
-        result = slot;
+    if(table[current_slot].filled==false && !duplicate)
+        result = current_slot;
 
 	return result;
 }
@@ -200,11 +232,10 @@ int  HashTable::NewSlot(int key, int& tries){
 bool HashTable::TableFull()const{
     bool result = true;
 	if(tableSize > 0 && table){
-        int slot = 0;
-        while(slot < tableSize && result){
-            if(table[slot] == 0 || table[slot] == -1)
-                result = false;
-            slot++;
+        int current_slot = 0;
+        while(current_slot < tableSize && result){
+			result = table[current_slot].filled;
+            current_slot++;
         }
     }
 	return result;
@@ -221,11 +252,10 @@ bool HashTable::TableFull()const{
 bool HashTable::TableEmpty()const{
     bool result = true;
 	if(tableSize > 0 && table){
-        int slot = 0;
-        while(slot < tableSize && result){
-            if(table[slot] > 0)
-                result = false;
-            slot++;
+        int current_slot = 0;
+        while(current_slot < tableSize && result){
+			result = !table[current_slot].filled;
+            current_slot++;
         }
     }
 	return result;
@@ -245,9 +275,9 @@ void HashTable::ShowContents() const{
 	
 	   cout<<"\n\n|Location\tData\t|\n";
 	   for(int i=0; i < tableSize; i++){
-		  if(table[i] > 0){
+		  if(table[i].filled && table[i].active){
 		  	 cout<<"|-----------------------|\n";
-			 cout<<"|"<<i<<"\t\t"<<table[i]<<"\t|\n";
+			 cout<<"|"<<i<<"\t\t"<<table[i].value<<"\t|\n";
 		  }
 	   }
     }
@@ -259,6 +289,8 @@ void HashTable::ShowContents() const{
 //Function: ShowFill
 //Precondition: N/A
 //Postcondition: Show which records are filled and which are empty.
+//This of course does not mean that the slot is active - only that it is
+//unavailable for insertion.
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 void HashTable::ShowFill() const{
@@ -267,10 +299,10 @@ void HashTable::ShowFill() const{
 	   cout<<"\n\n";
 	   for(int i = 0; i < tableSize; i++){
 		  cout<<"|--------|\n";
-		  if(table[i] <= 0)
-			 cout<<"|"<<i<<"\t |\n";
-		  else
+		  if(table[i].filled)
 			 cout<<"|"<<i<<"\tx|\n";
+		  else
+			 cout<<"|"<<i<<"\t |\n";
 	   }
 	   cout<<"|--------|\n";
     }
@@ -288,13 +320,15 @@ void HashTable::ShowFill() const{
 int HashTable::Search(int key) const{
     int result = 0;
 
-	int slot = key % tableSize;
+	int current_slot = key % tableSize;
 	int tries = 1; //Returns 1 if key is in hash slot
-	
-	while (table[slot] != 0 && result == 0 && tries <= tableSize){
-		if (table[slot] == key)
+	//Breaks out of loop if unfilled slot is encountered, if a match is found,
+	//or if the entire table has been searched
+	while (table[current_slot].filled && result == 0 && tries <= tableSize){
+		//If value matches and slot is active
+		if (table[current_slot].value == key && table[current_slot].active)
 			result = tries;
-		slot = (slot+1) % tableSize; //Linear Probing
+		current_slot = (current_slot+1) % tableSize; //Linear Probing
 		tries++;
 	}
 	
@@ -307,7 +341,7 @@ int HashTable::Search(int key) const{
 //Function: Constructor (Default)
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
-HashTable::HashTable():table(0),tableSize(0){}
+HashTable::HashTable():table(0),tableSize(0),slotsTaken(0){}
 
 
 //=============================================================================
@@ -316,6 +350,8 @@ HashTable::HashTable():table(0),tableSize(0){}
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 HashTable::HashTable(int size){
+
+	slotsTaken = 0;
 
 	if (size < 0){
 		table = 0;
@@ -329,15 +365,51 @@ HashTable::HashTable(int size){
 		  size = MAXTABLESIZE;
 	   size = FindClosestPrime(size);
 	
-	   table = new int[size];
+	   table = new slot[size];
 	   tableSize = size;
 	
-	   for(int l = 0; l< size; l++)  
-		  table[l] = 0;
+	   //for(int l = 0; l< size; l++)  
+		  //table[l].value = 0;
+		  //Don't need this because struct initializes values automatically
 
     }
 
 	cout<<"table created of size "<<size;
+}
+
+//=============================================================================
+//Class:    HashTable
+//Function: Rehash
+//Author: Rogers,Tuck,Yasaka
+//Description: When table gets too full, creates a new table twice as big
+//and rehashes all values to the new table.
+//=============================================================================
+void HashTable::Rehash(){
+	int newsize = tableSize * 2 + 1;  			//will always be odd
+	int current_slot;
+	int key;
+	if(newsize > MAXTABLESIZE)
+		newsize = MAXTABLESIZE;
+	newsize = FindClosestPrime(newsize);
+	slot * newtable = new slot[newsize];
+	//Iterates through the current table
+	for(int i=0;i<tableSize;i++){
+		//Checks if the slot has a value to copy
+		if(table[i].filled && table[i].active){
+			key = table[i].value;
+			current_slot = key%tableSize;
+			//Loop terminates once empty slot is found
+			while(newtable[current_slot].filled)
+				current_slot = (current_slot+1) % tableSize;
+			newtable[current_slot].value = key;
+			newtable[current_slot].filled = true;
+		}
+	}
+	//Reset old table and assign new table to it
+	delete []table;
+	table = newtable;
+	tableSize = newsize;
+	cout << "The table has been rehashed." << endl;
 }
 
 
