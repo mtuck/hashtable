@@ -100,7 +100,7 @@ HashTable::HashTable(const HashTable& n){
 int HashTable::Insert(int key){
     int result = 0;
     int newSlot;
-	if(tableSize > 0 && table){
+	if(tableSize > 0 && table && key > 0){
 	
 	   if(TableFull()){
 	       cout<<"Table is full\t";
@@ -112,10 +112,10 @@ int HashTable::Insert(int key){
 	           table[newSlot] = key;
                result = tries;
            }
-           else
-           	cout<<"Item could not be added\n";
         }
     }
+    if(result == 0)
+		cout<<"Item could not be added\n";
 
     return result;
 }
@@ -129,22 +129,25 @@ int HashTable::Insert(int key){
 //Author: Rogers,Tuck,Yasaka
 //=============================================================================
 int HashTable::Remove(int key){
+	
 	int result = 0;
+		
+	if(tableSize > 0 && table && key > 0){
 
-	int slot = key % tableSize;
-	int tries = 1; //Returns 1 if key is in hash slot
+		int slot = key % tableSize;
+		int tries = 1; //Returns 1 if key is in hash slot
 	
-	while (table[slot] != 0 && result == 0 && tries <= tableSize){
-		if (table[slot] == key){
-			table[slot] = -1;
-			result = ++tries;
-			break;
+		while (table[slot] != 0 && result == 0 && tries <= tableSize){
+			if (table[slot] == key){
+				table[slot] = -1;
+				result = ++tries;
+				break;
+			}
+			slot = (slot+1) % tableSize; //Linear Probing
+			tries++;
 		}
-		slot = (slot+1) % tableSize; //Linear Probing
-		tries++;
-	}
-	
 
+	}
 	
 	return result;
 }
@@ -288,14 +291,18 @@ void HashTable::ShowFill() const{
 int HashTable::Search(int key) const{
     int result = 0;
 
-	int slot = key % tableSize;
-	int tries = 1; //Returns 1 if key is in hash slot
+	if(tableSize > 0 && table && key > 0){
+
+		int slot = key % tableSize;
+		int tries = 1; //Returns 1 if key is in hash slot
 	
-	while (table[slot] != 0 && result == 0 && tries <= tableSize){
-		if (table[slot] == key)
-			result = tries;
-		slot = (slot+1) % tableSize; //Linear Probing
-		tries++;
+		while (table[slot] != 0 && result == 0 && tries <= tableSize){
+			if (table[slot] == key)
+				result = tries;
+			slot = (slot+1) % tableSize; //Linear Probing
+			tries++;
+		}
+	
 	}
 	
 	return result;
