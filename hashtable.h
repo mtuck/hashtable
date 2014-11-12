@@ -426,8 +426,9 @@ void HashTable::Rehash(){
 
 //=============================================================================
 //Class:    HashTable
-//Function: FindClosestPrime
+//Function: Absolute
 //Author: Rogers,Tuck,Yasaka
+//Descripion: Returns absolute value of input
 //=============================================================================
 int HashTable::Absolute(int number)const{
 	if(number >= 0)
