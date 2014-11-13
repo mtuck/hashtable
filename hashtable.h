@@ -140,7 +140,7 @@ int HashTable::Remove(int key){
 		while (table[slot] != 0 && result == 0 && tries <= tableSize){
 			if (table[slot] == key){
 				table[slot] = -1;
-				result = ++tries;
+				result = tries++;
 				break;
 			}
 			slot = (slot+1) % tableSize; //Linear Probing
